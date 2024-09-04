@@ -31,7 +31,7 @@
     $result = mysqli_query($conn, $sql);
     ?>
     <div class="container">
-        <h2>Add, Update and Delete Product using Ajax (Ajax CRUD)</h2>
+        <h2>Add, Update and Delete Product using Ajax (Ajax CRUD Testing)</h2>
         <div id="showMsg">
             <!-- <?php
                     if ($msg == 'success') { ?>
