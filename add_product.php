@@ -19,22 +19,35 @@ $color = $_POST['color']; // New color field
 $packaging = isset($_POST['packaging']) ? implode(",", $_POST['packaging']) : ""; // New packaging field
 
 $succMsg = $errMsg = "";
-
+$is_logged_in = isset($_SESSION['name']);
+// Start transaction
+mysqli_begin_transaction($conn);
+try {
 // Check if product already exists
 $sql = "SELECT * FROM product WHERE product_name='$product'";
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
-    $errMsg = "Product already exists.";
-} else {
+    throw new Exception("Product already exists.");
+} 
     // Insert the new product with color and packaging details
     $sql = "INSERT INTO product (product_name, price, stock, color, packaging) VALUES ('$product', '$price', '$stock', '$color', '$packaging')";
+    // Simulate error: trying to insert into a non-existent column 'invalid_column'
+    // $sql = "INSERT INTO product (product_name, price, stock, color, packaging, invalid_column) 
+    //         VALUES ('$product', '$price', '$stock', '$color', '$packaging', 'value')";
     $result = mysqli_query($conn, $sql);
-    if ($result) {
-        $succMsg = "Product Added";
-    } else {
-        $errMsg = "Error: product not added.";
-    }
+    if (!$result) {
+        throw new Exception("Error: product not added.");
+    } 
+    // Commit the transaction
+    mysqli_commit($conn);
+    $succMsg = "Product Added";
+} catch(Exception $e) {
+    // Rollback the transaction if any error occurs
+    mysqli_rollback($conn);
+    $errMsg = $e->getMessage();
 }
+
+
 
 // Fetch and display updated product list
 $sql = "SELECT * FROM product ORDER BY product_id";
@@ -51,7 +64,10 @@ $result = mysqli_query($conn, $sql);
             <th>Stock</th>
             <th>Color</th> <!-- New column for color -->
             <th>Packaging</th> <!-- New column for packaging -->
-            <th>Action</th>
+            <?php if ($is_logged_in): // Show "Action" column only if logged in 
+                                ?>
+                                    <th>Action</th>
+                                <?php endif; ?>
         </thead>
     </tr>
     <?php
@@ -70,18 +86,21 @@ $result = mysqli_query($conn, $sql);
                 <td><?= $row['product_name']; ?></td>
                 <td><?= $row['price']; ?></td>
                 <td><?= $row['stock']; ?></td>
-                <td><?= $row['color']; ?></td> <!-- Display color -->
-                <td><?= $row['packaging']; ?></td> <!-- Display packaging -->
-                <td>
-                    <a href="index.php?id=<?= $product_id ?>&flag=edit" class="fa fa-edit" title="Edit"></a>
-                    <a href="javascript:void(0)" title="Delete" class="fa fa-remove" onclick="delProduct('<?= $product_id ?>','<?= $product_name ?>')"></a>
-                </td>
-            </tr>
-    <?php
-        }
+                <td><?php echo $color; ?></td>
+                                    <td><?php echo implode(", ", $packaging); ?></td>
+                                    <?php if ($is_logged_in): // Show "Action" buttons only if logged in 
+                                    ?>
+                                        <td>
+                                            <a href="update_product.php?id=<?= $product_id ?>" class="fa fa-edit" title="Edit"></a>
+                                            <a href="javascript:void(0)" title="Delete" class="fa fa-remove" onclick="delProduct('<?= $product_id ?>','<?= $product_name ?>')"></a>
+                                        </td>
+                                    <?php endif; ?>
+                                </tr>
+                            <?php
+                            }
     } else { ?>
         <tr>
-            <td colspan="8">No Products found.</td>
+            <td colspan="6">No Products found.</td>
         </tr>
     <?php } ?>
 </table>

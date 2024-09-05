@@ -4,7 +4,7 @@ include "topmenu.php";
 $name = $email = $pwd = $conf_pwd = "";
 $name_err = $email_err = $pwd_err = $conf_pwd_err = "";
 $error = false;
-$succ_msg=$err_msg = "";
+$succ_msg = $err_msg = "";
 
 if (isset($_POST['submit'])) {
     $name = trim($_POST['name']);
@@ -60,59 +60,58 @@ if (isset($_POST['submit'])) {
         $error = true;
     }
 
-    if ($pwd !="" && $conf_pwd !=""){
-        if ($pwd != $conf_pwd){
+    if ($pwd != "" && $conf_pwd != "") {
+        if ($pwd != $conf_pwd) {
             $conf_pwd_err = "Passwords do not match";
             $error = true;
         }
     }
 
     // All validations passed
-if (!$error) {
-    $pwd = password_hash($pwd, PASSWORD_DEFAULT);
+    if (!$error) {
+        $pwd = password_hash($pwd, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
 
-    // Initialize the statement
-    if ($stmt = mysqli_prepare($conn, $sql)) {
+        // Initialize the statement
+        if ($stmt = mysqli_prepare($conn, $sql)) {
 
-        // Bind parameters
-        mysqli_stmt_bind_param($stmt, "sss", $name, $email, $pwd);
+            // Bind parameters
+            mysqli_stmt_bind_param($stmt, "sss", $name, $email, $pwd);
 
-        // Execute the statement
-        if (mysqli_stmt_execute($stmt)) {
-            $succ_msg = "Registration successful. Please <a href='login.php'>login</a>";
-            $name = $email = "";
+            // Execute the statement
+            if (mysqli_stmt_execute($stmt)) {
+                $succ_msg = "Registration successful. Please <a href='login.php'>login</a>";
+                $name = $email = "";
+            } else {
+                $error_msg = "Error: Could not execute the query.";
+            }
+
+            // Close the statement
+            mysqli_stmt_close($stmt);
         } else {
-            $error_msg = "Error: Could not execute the query.";
+            $error_msg = "Error: Could not prepare the SQL statement.";
         }
-
-        // Close the statement
-        mysqli_stmt_close($stmt);
-    } else {
-        $error_msg = "Error: Could not prepare the SQL statement.";
     }
-}
-
 }
 
 ?>
 <h1>Registration</h1>
 <div class="container">
-<div class="err-msg">
-          <?php if (!empty($succ_msg)){ ?>
-              <div class="alert alert-success">
-                  <?= $succ_msg?>
-              </div>
-          <?php } ?>
-  
-          <?php if (!empty($error_msg)){ ?>
-              <div class="alert alert-danger">
-                  <?= $error_msg?>
-              </div>
-          <?php } ?>
-  
-      </div>
+    <div class="err-msg">
+        <?php if (!empty($succ_msg)) { ?>
+            <div class="alert alert-success">
+                <?= $succ_msg ?>
+            </div>
+        <?php } ?>
+
+        <?php if (!empty($error_msg)) { ?>
+            <div class="alert alert-danger">
+                <?= $error_msg ?>
+            </div>
+        <?php } ?>
+
+    </div>
     <form action="" method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
@@ -121,9 +120,8 @@ if (!$error) {
                 class="form-control"
                 name="name"
                 id="name"
-                placeholder="Enter Name" 
-                value="<?=$name?>"
-                />
+                placeholder="Enter Name"
+                value="<?= $name ?>" />
             <div class="input-err text-danger"><?= $name_err ?></div>
         </div>
         <div class="mb-3">
@@ -133,9 +131,8 @@ if (!$error) {
                 class="form-control"
                 name="email"
                 id="email"
-                placeholder="Enter email" 
-                value="<?=$email?>"
-                />
+                placeholder="Enter email"
+                value="<?= $email ?>" />
             <div class="input-err text-danger"><?= $email_err ?></div>
         </div>
         <div class="mb-3">
@@ -145,7 +142,8 @@ if (!$error) {
                 class="form-control"
                 name="pwd"
                 id="pwd"
-                placeholder="Enter password" />
+                placeholder="Enter password"
+                value="<?= $pwd ?>" />
             <div class="input-err text-danger"><?= $pwd_err ?></div>
         </div>
         <div class="mb-3">
@@ -155,7 +153,8 @@ if (!$error) {
                 class="form-control"
                 name="conf_pwd"
                 id="conf_pwd"
-                placeholder="Enter Confirm password" />
+                placeholder="Enter Confirm password"
+                value="<?= $conf_pwd ?>" />
             <div class="input-err text-danger"><?= $conf_pwd_err ?></div>
         </div>
         <div class="form-check">

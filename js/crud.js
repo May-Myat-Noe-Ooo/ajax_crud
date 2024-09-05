@@ -1,9 +1,3 @@
-$("#frm :input").change(function(){
-    $("#frm").data("changed",true);
-})
-
-
-
 function validateForm(p_name,price,stock){
     $("#productErr").html("");
     $("#priceErr").html("");
@@ -75,6 +69,8 @@ function addProduct() {
         dataType: "text",
         success: function(response) {
             $("#products").html(response);
+            //$('#frm')[0].reset();  // This clears all form fields after the product is added
+
         }
     });
 }

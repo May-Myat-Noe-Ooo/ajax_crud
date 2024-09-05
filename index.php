@@ -31,14 +31,8 @@
     $result = mysqli_query($conn, $sql);
     ?>
     <div class="container">
-        <h2>Add, Update and Delete Product using Ajax (Ajax CRUD)</h2>
+        <h2>Add, Update and Delete Product using Ajax (Ajax CRUD testing stashing)</h2>
         <div id="showMsg">
-            <!-- <?php
-                    if ($msg == 'success') { ?>
-                <div class='alert alert-success alert-dismissible fade show' role='alert'>Product updated Successfully.</div>
-            <?php
-                    }
-            ?> -->
             <?php if (isset($_SESSION['success'])) {
                 echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
             {$_SESSION['success']}
@@ -193,12 +187,12 @@
     </script>
     <script src="js/crud.js"></script>
     <script>
-        $(document).ready(function() {
-            // Automatically hide alert after 5 seconds if there is a message
-            setTimeout(function() {
-                $("#showMsg .alert").alert('close');
-            }, 5000); // 5000 milliseconds = 5 seconds
-        });
+        // $(document).ready(function() {
+        //     // Automatically hide alert after 5 seconds if there is a message
+        //     setTimeout(function() {
+        //         $("#showMsg .alert").alert('close');
+        //     }, 5000); // 5000 milliseconds = 5 seconds
+        // });
     </script>
 </body>
 

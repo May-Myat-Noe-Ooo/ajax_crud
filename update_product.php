@@ -135,6 +135,10 @@
                 dataType: "text",
                 success: function(response) {
                     $("#showMsg").html(response);
+                    setTimeout(function() {
+        $('#updateForm')[0].reset();  // Clear form after UI update
+        console.log("Form cleared after product update.");
+    }, 100);  // Adding a slight delay to ensure the UI updates first
                 }
             });
         }

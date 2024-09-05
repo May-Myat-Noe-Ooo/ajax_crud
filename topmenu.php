@@ -14,7 +14,8 @@ $current_page = basename($_SERVER['PHP_SELF']); // Get the current page name
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- <link rel="stylesheet" href="css/style.css"> -->
-    <?php include 'css/style.php'; ?>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+   
 </head>
 
 <body>

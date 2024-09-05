@@ -1,61 +1,69 @@
 <?php
 include 'cfg/dbconnect.php';
-$p_id=$_POST['p_id'];
-$succMsg=$errMsg="";
+$p_id = $_POST['p_id'];
+$succMsg = $errMsg = "";
 
 //delete appropriate row in products
-$sql="delete from product where product_id='$p_id'";
-$result=mysqli_query($conn,$sql);
-if($result)
-$succMsg="Product Deleted";
+$sql = "delete from product where product_id='$p_id'";
+$result = mysqli_query($conn, $sql);
+if ($result)
+    $succMsg = "Product Deleted";
 else
-$errMsg="Error:product not deleted.";
+    $errMsg = "Error:product not deleted.";
 
-$sql="select * from product order by product_id";
-$result=mysqli_query($conn,$sql);
+$sql = "select * from product order by product_id";
+$result = mysqli_query($conn, $sql);
 ?>
 <table class="table table-bordered table-striped">
-                        <tr>
-                            <thead>
-                                <th>Serial No.</th>
-                                <th>Product Id</th>
-                                <th>Product Name</th>
-                                <th>Price (<span class="fa fa-inr"></span>)</th>
-                                <th>Stock</th>
-                                <th>Action</th>
-                            </thead>
-                        </tr>
-                        <?php
-                if(mysqli_num_rows($result)>0){
-                    $counter=0;
-                    foreach($result as $row){
-                        $counter++;
-                        $product_id=$row['product_id'];
-                        $product_name=$row['product_name'];
-                        ?>
-                        <tr>
-                            <td><?= $counter;?></td>
-                            <td><?= $row['product_id'];?></td>
-                            <td><?= $row['product_name'];?></td>
-                            <td><?= $row['price'];?></td>
-                            <td><?= $row['stock'];?></td>
-                            <td>
-                            <a href="index.php?id=<?=$product_id?>&flag=edit"  class="fa fa-edit" title="Edit"></a>
-                            <a href="javascript:void(0)" title="Delete" class="fa fa-remove" onclick="delProduct('<?=$product_id?>','<?=$product_name?>')"></a>
-                            </td>
-                        </tr>
-                        <?php
-                    }
-                }
-                else { ?>
-                        <tr>
-                            <td>No Products found.</td>
-                        </tr>
-                        <?php } ?>
+    <tr>
+        <thead>
+            <th>Serial No.</th>
+            <th>Product Id</th>
+            <th>Product Name</th>
+            <th>Price (<span class="fa fa-inr"></span>)</th>
+            <th>Stock</th>
+            <th>Color</th>
+            <th>Packaging Options</th>
+            <th>Action</th>
+
+        </thead>
+    </tr>
+    <?php
+    if (mysqli_num_rows($result) > 0) {
+        $counter = 0;
+        foreach ($result as $row) {
+            $counter++;
+            $product_id = $row['product_id'];
+            $product_name = $row['product_name'];
+            $color = $row['color'];
+            $packaging = explode(",", $row['packaging']); // Assuming 'packaging' is stored as a comma-separated string
+    ?>
+            <tr>
+                <td><?= $counter; ?></td>
+                <td><?= $row['product_id']; ?></td>
+                <td><?= $row['product_name']; ?></td>
+                <td><?= $row['price']; ?></td>
+                <td><?= $row['stock']; ?></td>
+                <td><?php echo $color; ?></td>
+                <td><?php echo implode(", ", $packaging); ?></td>
+
+                <td>
+                    <a href="update_product.php?id=<?= $product_id ?>" class="fa fa-edit" title="Edit"></a>
+                    <a href="javascript:void(0)" title="Delete" class="fa fa-remove" onclick="delProduct('<?= $product_id ?>','<?= $product_name ?>')"></a>
+                </td>
+
+            </tr>
+        <?php
+        }
+    } else { ?>
+        <tr>
+            <td colspan="6">No Products found.</td>
+        </tr>
+    <?php } ?>
 
 
 
-                    </table>
+</table>
 
 <script>
     $(document).ready(function() {

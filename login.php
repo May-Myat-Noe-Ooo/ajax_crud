@@ -54,11 +54,13 @@ if (!$error) {
                     if (isset($_POST['remember'])){
                       // set cookies for email and checkbox
                         setcookie("remember_email", $email, time()+365*24*3600);
+                        setcookie("remember_password", $pwd, time()+365*24*3600);
                         setcookie("remember", $remember, time()+365*24*3600);
                     }
                     else{
                         // delete cookies for email and checkbox
                         setcookie("remember_email", $email, time() - 365*24*3600);
+                        setcookie("remember_password", $pwd, time()-365*24*3600);
                         setcookie("remember", $remember, time() - 365*24*3600);
                     }   
                     $_SESSION['name'] = $row['name'];
@@ -88,12 +90,12 @@ if (!$error) {
     <div class="err-msg">
     <?php
         if (isset($_SESSION['error'])) {
-            echo "<div class='alert alert-danger'>" . $_SESSION['error'] . "</div>";
+            echo "<div id='errorMessage' class='alert alert-danger'>" . $_SESSION['error'] . "</div>";
             unset($_SESSION['error']);
         }
 
         if (isset($_SESSION['success'])) {
-            echo "<div class='alert alert-success'>" . $_SESSION['success'] . "</div>";
+            echo "<div id='successMessage' class='alert alert-success'>" . $_SESSION['success'] . "</div>";
             unset($_SESSION['success']);
         }
         ?>
@@ -108,7 +110,7 @@ if (!$error) {
     <form action="" method="post">
     <?php
              $display_email = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : $email;
-
+             $display_password = isset($_COOKIE['remember_password']) ? $_COOKIE['remember_password'] : $pwd;
              $checked = !empty($remember) ? "checked" : (isset($_COOKIE['remember']) ? "checked" : "");
             ?>
         <div class="mb-3">
@@ -129,7 +131,8 @@ if (!$error) {
                 class="form-control"
                 name="pwd"
                 id="pwd"
-                placeholder="Enter password" />
+                placeholder="Enter password"
+                value="<?= $display_password ?>" />
             <div class="input-err text-danger"><?= $pwd_err ?></div>
         </div>
         <div class="form-check">
@@ -155,6 +158,23 @@ if (!$error) {
         <p>Not Registered? Register <a href="register.php">here</a></p>
     </form>
 </div>
+<script>
+     // Hide the error message after 5 seconds (5000 ms)
+     setTimeout(function () {
+        var errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+    }, 5000); // 5000 ms = 5 seconds
+
+    // Hide the success message after 5 seconds (5000 ms)
+    setTimeout(function () {
+        var successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
+    }, 5000);
+</script>
 </body>
 
 </html>
